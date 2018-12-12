@@ -2,7 +2,7 @@
 
 /**
  * Mmi Framework (https://github.com/milejko/mmi.git)
- * 
+ *
  * @link       https://github.com/milejko/mmi.git
  * @copyright  Copyright (c) 2010-2016 Mariusz Miłejko (http://milejko.com)
  * @license    http://milejko.com/new-bsd.txt New BSD License
@@ -51,10 +51,12 @@ class Category extends \Cms\Form\AttributeForm
                 ->setDateMinField($this->getElement('dateStart')));
 
         //ustawienie bufora
-        $this->addElement((new Element\Select('cacheLifetime'))
+        $this->addElement(
+            (new Element\Select('cacheLifetime'))
                 ->setLabel('odświeżanie')
                 ->setMultioptions([null => 'domyślne dla szablonu'] + \Cms\Orm\CmsCategoryRecord::CACHE_LIFETIMES)
-                ->addFilter(new Filter\EmptyToNull));
+                ->addFilter(new Filter\EmptyStringToNull)
+        );
 
         //aktywna
         $this->addElement((new Element\Checkbox('active'))
@@ -79,7 +81,7 @@ class Category extends \Cms\Form\AttributeForm
         $this->addElement((new Element\Text('customUri'))
                 ->setLabel('własny adres strony')
                 //adres domyślny (bez baseUrl)
-                ->setDescription('domyślnie: ' . substr($view->url(['module' => 'cms', 'controller' => 'category', 'action' => 'dispatch', 'uri' => $this->getRecord()->uri], true), strlen($view->baseUrl) + 1))
+                ->setDescription('domyślnie: ' . $this->getRecord()->uri)
                 ->addFilter(new Filter\StringTrim)
                 ->addFilter(new Filter\EmptyToNull)
                 ->addValidator(new Validator\StringLength([1, 255])));
